@@ -14,7 +14,8 @@ ul,
 span,
 div,
 input,
-button {
+button ,
+p{
   margin: 0;
   padding: 0;
 }
@@ -22,9 +23,91 @@ button {
 a {
   text-decoration: none;
 }
-li{
-    list-style: none;
+
+li {
+  list-style: none;
 }
+
 .el-input--small {
   width: 100px;
+}
+
+.cpm .el-input--small {
+  width: 200px;
+}
+
+.cpm {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 1px solid #000;
+  background: #fff;
+  border-radius: 15px;
+  z-index: 99;
+  padding-bottom: 20px;
+  border: 1px solid #ccc;
+}
+
+.cpm_tit {
+  padding: 0 20px;
+  font-size: 16px;
+  background-color: #f5f6fa;
+  line-height: 40px;
+  height: 40px;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  color: #5e78bc;
+}
+
+.cpm_body {
+  padding: 20px;
+}
+
+.cpm_btn {
+  text-align: center;
+}
+
+.cpm_line {
+  height: 50px;
+  line-height: 50px;
+}
+
+.cpm_line span {
+  display: inline-block;
+  text-align: right;
+  width: 100px;
+}
+
+.cpm_i {
+  float: right;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.cpm_img {
+  height: 80px;
+}
+
+.cpm_img span {
+  position: relative;
+  top: -30px;
+  display: inline-block;
+  width: 100px;
+  text-align: right;
+}
+/* 分页 */
+.el-pagination {
+  text-align: right;
+  margin-right: 50px;
+  margin-top: 50px;
+}
+/* 表格 */
+.el-table th{
+  text-align: center;
+}
+.el-table td{
+  text-align: center;
 }
