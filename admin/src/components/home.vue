@@ -1,34 +1,50 @@
 <template>
-<div>
-<el-radio v-model="radio" label="1">备选项</el-radio>
-  <el-radio v-model="radio" label="2">备选项</el-radio>
-</div>
+  <div class="banxin">
+    <div class="head">
+      <img src="./../assets/images/LOGO.png" alt="">
+      <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect" router>
+        <el-menu-item index="/home/content">内容</el-menu-item>
+        <el-menu-item index="2">审核</el-menu-item>
+        <el-menu-item index="3">道路救援</el-menu-item>
+      </el-menu>
+    </div>
+    <router-view/>
+  </div>
 </template>
 
 <script>
-export default {
-  name: 'home',
-  data () {
-    return {
-      radio: '1'
+  export default {
+    data() {
+      return {
+        activeIndex: "/home/content",
+      };
+    },
+    methods: {
+      handleSelect(key, keyPath) {
+        console.log(key, keyPath);
+      }
     }
-  }
-}
+  };
+
 </script>
 
 <style scoped>
-h1, h2 {
-  font-weight: normal;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
+  .banxin {
+    width: 1600px;
+    margin: 0 auto;
+  }
+
+  .head {
+    overflow: hidden;
+  }
+
+  .head img {
+    float: left;
+    height: 60px;
+  }
+
+  .head .el-menu-demo {
+    float: left;
+  }
+
 </style>
