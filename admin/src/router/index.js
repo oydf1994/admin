@@ -56,6 +56,16 @@ export default new Router({
           }, {
             path: '/home/content/msgManage/links',
             component: require('@/components/content/msgManage/links').default,
+            children: [{
+              path: '/home/content/msgManage/links/friendship',
+              component: require('@/components/content/msgManage/links/friendship').default,
+            }, {
+              path: '/home/content/msgManage/links/Its',
+              component: require('@/components/content/msgManage/links/Its').default,
+            }, {
+              path: '/home/content/msgManage/links/webNav',
+              component: require('@/components/content/msgManage/links/webNav').default,
+            }]
           }, {
             path: '/home/content/msgManage/news',
             component: require('@/components/content/msgManage/news').default,

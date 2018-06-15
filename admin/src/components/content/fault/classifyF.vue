@@ -43,8 +43,8 @@
             状态:
           </span>
           <el-radio-group v-model="radio2">
-            <el-radio :label='1'>上线</el-radio>
-            <el-radio :label='2'>隐藏</el-radio>
+            <el-radio label='1'>上线</el-radio>
+            <el-radio label='2'>隐藏</el-radio>
           </el-radio-group>
         </div>
         <div class="cpm_line">
