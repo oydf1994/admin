@@ -10,10 +10,10 @@
             <el-menu-item index="/home/content/carLive/manage">
               <span slot="title">车生活管理</span>
             </el-menu-item>
-            <el-menu-item index="/home/content/fault">
+            <el-menu-item index="/home/content/fault/classifyF">
               <span slot="title">常见故障管理</span>
             </el-menu-item>
-            <el-menu-item index="/home/content/msgManage">
+            <el-menu-item index="/home/content/msgManage/basic">
               <span slot="title">官网信息管理</span>
             </el-menu-item>
           </el-menu>
@@ -30,8 +30,8 @@ export default {
     handleOpen(key, keyPath) {
       console.log(key, keyPath);
     },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath);
+    handleClose(done){
+      done()
     }
   }
 };

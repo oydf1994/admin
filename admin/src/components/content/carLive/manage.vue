@@ -53,26 +53,26 @@
         </div>
         <div class="cpm_body">
           <div class="cpm_line">
-            <span>分类:</span>
+            <span class="span">分类:</span>
             <el-select v-model="value" placeholder="请选择" size="small">
               <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
               </el-option>
             </el-select>
           </div>
           <div class="cpm_line">
-            <span>标题:</span>
+            <span class="span">标题:</span>
             <el-input v-model="input" placeholder="请输入内容" size="small"></el-input>
           </div>
           <div class="cpm_line">
-            <span>副标题:</span>
+            <span class="span">副标题:</span>
             <el-input v-model="input" placeholder="请输入内容" size="small"></el-input>
           </div>
           <div class="cpm_line">
-            <span>是否评论:</span>
+            <span class="span">是否评论:</span>
             <el-input v-model="input" placeholder="请输入内容" size="small"></el-input>
           </div>
           <div class="cpm_line">
-            <span>是否上线:</span>
+            <span class="span">是否上线:</span>
             <el-input v-model="input" placeholder="请输入内容" size="small"></el-input>
           </div>
           <div class="cpm_img">
@@ -91,7 +91,7 @@
         </div>
       </div>
     </transition>
-    <el-dialog title="评论" :visible.sync="comment" width="30%" :before-close="(handleClose)">
+    <el-dialog title="评论" :visible.sync="comment" width="30%" :before-close="handleClose">
       <div>
         <div style="margin-bottom: 20px;">
           <a href="javascript:;" v-if="!submit" @click="submit = true">添加评论</a>
@@ -101,7 +101,7 @@
           </div>
           <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="textarea" v-if="submit"></el-input>
         </div>
-        
+
         <ul class="commentList">
           <li>
             <img src="./../../../assets/images/u542.jpg" alt="">
@@ -125,97 +125,100 @@
 </template>
 
 <script>
-  import UE from "../../common/ueditor";
-  export default {
-    data() {
-      return {
-        textarea: '',
-        submit: false,
-        comment: false,
-        config: {
-          initialFrameWidth: null,
-          initialFrameHeight: 350
+import UE from "../../common/ueditor";
+export default {
+  data() {
+    return {
+      textarea: "",
+      submit: false,
+      comment: false,
+      config: {
+        initialFrameWidth: null,
+        initialFrameHeight: 350
+      },
+      input: "",
+      dialogVisible: false,
+      value: "",
+      options: [],
+      currentPage: 1,
+      tableData3: [
+        {
+          date: "2016-05-02",
+          name: "1",
+          address: "上海市"
         },
-        input: "",
-        dialogVisible: false,
-        value: "",
-        options: [],
-        currentPage: 1,
-        tableData3: [{
-            date: "2016-05-02",
-            name: "1",
-            address: "上海市"
-          },
-          {
-            date: "2016-05-04",
-            name: "2",
-            address: " 1517 弄"
-          },
-          {
-            date: "2016-05-01",
-            name: "3",
-            address: " 1519 弄"
-          },
-          {
-            date: "2016-05-03",
-            name: "4",
-            address: " 1516 弄"
-          }
-        ],
-        options: [{
+        {
+          date: "2016-05-04",
+          name: "2",
+          address: " 1517 弄"
+        },
+        {
+          date: "2016-05-01",
+          name: "3",
+          address: " 1519 弄"
+        },
+        {
+          date: "2016-05-03",
+          name: "4",
+          address: " 1516 弄"
+        }
+      ],
+      options: [
+        {
           value: "选项1",
           label: "黄金糕"
-        }]
-      };
+        }
+      ]
+    };
+  },
+  components: {
+    UE
+  },
+  methods: {
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
     },
-    components: {
-      UE
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
     },
-    methods: {
-      handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-      },
-      handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
-      },
-      handleClose() {},
-      //保存
-      save() {
-        console.log(this.$refs.ue.getUEContent());
-      },
-      // 添加
-      add() {},
-      handleSelectionChange(val) {
-        console.log(val);
-      },
-      demo(item) {
-        console.log(item);
-      }
+    handleClose(done) {
+      done();
+    },
+    //保存
+    save() {
+      console.log(this.$refs.ue.getUEContent());
+    },
+    // 添加
+    add() {},
+    handleSelectionChange(val) {
+      console.log(val);
+    },
+    demo(item) {
+      console.log(item);
     }
-  };
-
+  }
+};
 </script>
 
 <style scoped>
-  .center {
-    width: 700px;
-  }
+.center {
+  width: 700px;
+}
 
-  .commentList img {
-    width: 50px;
-    float: left;
-  }
+.commentList img {
+  width: 50px;
+  float: left;
+}
 
-  commentList li {
-    margin-bottom: 20px;
-  }
+commentList li {
+  margin-bottom: 20px;
+}
 
-  .describe {
-    margin-left: 60px;
-  }
+.describe {
+  margin-left: 60px;
+}
 
-  .describe_p {
-    margin: 5px 0;
-  }
-
+.describe_p {
+  margin: 5px 0;
+}
 </style>

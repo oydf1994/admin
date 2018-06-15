@@ -14,8 +14,8 @@ ul,
 span,
 div,
 input,
-button ,
-p{
+button,
+p {
   margin: 0;
   padding: 0;
 }
@@ -29,13 +29,15 @@ li {
 }
 
 .el-input--small {
-  width: 100px;
+  width: 120px;
 }
 
-.cpm .el-input--small {
+.cpm .el-input--small{
   width: 200px;
 }
-
+.dialog .el-input--small {
+  width: 200px;
+}
 .cpm {
   position: absolute;
   left: 0;
@@ -73,9 +75,10 @@ li {
 .cpm_line {
   height: 50px;
   line-height: 50px;
+  margin: 10px 0;
 }
 
-.cpm_line span {
+.cpm_line .span {
   display: inline-block;
   text-align: right;
   width: 100px;
@@ -98,16 +101,24 @@ li {
   width: 100px;
   text-align: right;
 }
+
 /* 分页 */
+
 .el-pagination {
   text-align: right;
   margin-right: 50px;
   margin-top: 50px;
 }
+
 /* 表格 */
-.el-table th{
+
+.el-table th {
   text-align: center;
 }
-.el-table td{
+
+.el-table td {
   text-align: center;
+}
+.el-dialog__body {
+  padding-top: 0;
 }
