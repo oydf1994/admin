@@ -1,113 +1,254 @@
 <template>
   <div>
     <div>
-      <el-button size="small" type="primary" icon="el-icon-plus" @click="dialogVisible = true">新增分类</el-button>
+      <el-button size="small" type="primary" icon="el-icon-plus" @click="dialogVisible = true">添加</el-button>
+      <el-button size="small" type="primary" icon="el-icon-close">批量删除</el-button>
+      <span>分类:</span>
+      <el-select v-model="value" placeholder="请选择" size="small">
+        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+        </el-option>
+      </el-select>
       <span>关键字:</span>
       <el-input v-model="input" placeholder="请输入内容" size="small"></el-input>
       <el-button size="small" type="primary">查询</el-button>
     </div>
-    <el-table :data="tableData3" style="width: 100%">
-      <el-table-column prop="date" label="分类" width="180">
+    <el-table ref="multipleTable" :data="tableData3" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
+      <el-table-column type="selection" width="55">
       </el-table-column>
-      <el-table-column prop="name" label="发布数量" width="180">
+      <el-table-column label="标题">
+        <template slot-scope="scope">{{ scope.row.title }}</template>
       </el-table-column>
-      <el-table-column prop="address" label="排序">
+      <el-table-column prop="category_name" label="所属分类" width="120">
       </el-table-column>
-      <el-table-column prop="address" label="状态">
-        <template slot-scope="scope">
-          <a href="javascript:;">启用</a>
+      <el-table-column label="浏览量"   prop="click" show-overflow-tooltip>
+      </el-table-column>
+      <el-table-column prop="comment" label="评论量" show-overflow-tooltip>
+      </el-table-column>
+      <el-table-column prop="status" label="状态" show-overflow-tooltip>
+          <template slot-scope="scope">
+          <a href="#" v-if="scope.row.status == 0" @click="status(0)">上线</a>
+          <a href="#" v-if="scope.row.status == 1" @click="status(1)">下线</a>
         </template>
       </el-table-column>
-      <el-table-column prop="address" label="操作">
+      <el-table-column prop="create_time" label="发布日期" show-overflow-tooltip>
+      </el-table-column>
+      <el-table-column label="操作" show-overflow-tooltip>
         <template slot-scope="scope">
+          <el-button type="text" size="small" v-if="scope.row.top == 0" @click="top(1,scope.row.id)">置顶</el-button>
+          <el-button type="text" size="small" v-if="scope.row.top == 1" @click="top(0,scope.row.id)">取消置顶</el-button>
           <el-button type="text" size="small">编辑</el-button>
           <el-button type="text" size="small">删除</el-button>
+          <el-button type="text" size="small" @click="comment = true">评论</el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="address" label="备注">
-      </el-table-column>
     </el-table>
-    <el-dialog title="新增分类" :visible.sync="dialogVisible" width="35%" :before-close="handleClose">
-      <div class="dialog">
-        <div class="cpm_line">
-          <span class="span">
-            分类名称:
-          </span>
-          <el-input v-model="input" placeholder="请输入内容" size="small"></el-input>
+    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[100, 200, 300, 400]"
+      :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400">
+    </el-pagination>
+    <transition name="el-fade-in-linear">
+      <div v-show="dialogVisible" class="cpm center">
+        <div class="cpm_tit">
+          添加内容
+          <i class="el-icon-close cpm_i" @click="dialogVisible=false"></i>
         </div>
-        <div class="cpm_line">
-          <span class="span">
-            排序:
-          </span>
-          <el-input v-model="input" placeholder="请输入内容" size="small"></el-input>
-          <span class="span">
-            状态:
-          </span>
-          <el-select v-model="value" placeholder="请选择" size="small">
-            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" >
-            </el-option>
-          </el-select>
+        <div class="cpm_body">
+          <div class="cpm_line">
+            <span class="span">分类:</span>
+            <el-select v-model="carLives.c_id" placeholder="请选择" size="small">
+              <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+              </el-option>
+            </el-select>
+          </div>
+          <div class="cpm_line">
+            <span class="span">标题:</span>
+            <el-input v-model="carLives.title" placeholder="请输入内容" size="small"></el-input>
+          </div>
+          <!-- <div class="cpm_line">
+            <span class="span">副标题:</span>
+            <el-input v-model="input" placeholder="请输入内容" size="small"></el-input>
+          </div> -->
+          <!-- <div class="cpm_line">
+            <span class="span">是否评论:</span>
+            <el-input v-model="input" placeholder="请输入内容" size="small"></el-input>
+          </div> -->
+           <div class="cpm_line">
+            <span class="span">文章类型:</span>
+             <el-radio-group v-model="carLives.type">
+            <el-radio label='1'>图文文章</el-radio>
+            <el-radio label='2'>视频文章</el-radio>
+          </el-radio-group>
+          </div>
+          <div class="cpm_line">
+            <span class="span">是否上线:</span>
+            <el-radio-group v-model="carLives.status">
+            <el-radio label='1'>上线</el-radio>
+            <el-radio label='0'>隐藏</el-radio>
+          </el-radio-group>
+          </div>
+          <div class="cpm_img">
+            <span>封面:</span>
+            <div class="addImg">
+              <img src="../../../assets/images/add_image@2x.png" alt="">
+              <input type="file" @change="imgChange">
+            </div>
+          </div>
+          <div>
+            <div class="editor-container">
+              <UE :config='config' ref="ue"></UE>
+            </div>
+          </div>
         </div>
-        <div class="cpm_line">
-          <span class="span">备注</span>
-    <el-input type="textarea" v-model="textarea" style="width:510px"></el-input>
+        <div class="cpm_btn">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="save">确 定</el-button>
         </div>
       </div>
+    </transition>
+    <el-dialog title="评论" :visible.sync="comment" width="30%" :before-close="handleClose">
+      <div>
+        <div style="margin-bottom: 20px;">
+          <a href="javascript:;" v-if="!submit" @click="submit = true">添加评论</a>
+          <div v-if="submit">
+            <a href="javascript:;" @click="submit = false">取消</a>&nbsp;
+            <a href="javascript:;">确定</a>
+          </div>
+          <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="textarea" v-if="submit"></el-input>
+        </div>
+
+        <ul class="commentList">
+          <li>
+            <img src="./../../../assets/images/u542.jpg" alt="">
+            <div class="describe">
+              <div>
+                <span>无敌美少女</span>
+                <span>2018-6-9 18:14</span>
+              </div>
+              <p class="describe_p">身后有余忘缩手，眼前无路想回头，高峰时不得瑟，低谷时不坠落，不自怨自艾，什么时候都要记住一步一个脚印</p>
+              <a href="javascript:;">删除</a>
+            </div>
+          </li>
+        </ul>
+      </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button @click="comment = false">取 消</el-button>
+        <el-button type="primary" @click="comment = false">确 定</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        textarea:'',
-        dialogVisible: false,
-        input: "",
-        tableData3: [{
-            date: "2016-05-02",
-            name: "王小虎111",
-            address: "上海市普陀区金沙江路 1518 弄"
-          },
-          {
-            date: "2016-05-04",
-            name: "王小虎",
-            address: "上海市普陀区金沙江路 1517 弄"
-          },
-          {
-            date: "2016-05-01",
-            name: "王小虎",
-            address: "上海市普陀区金沙江路 1519 弄"
-          },
-          {
-            date: "2016-05-03",
-            name: "王小虎",
-            address: "上海市普陀区金沙江路 1516 弄"
-          }
-        ],
-        options: [{
-          value: "选项1",
-          label: "黄金糕"
-        }]
-      };
-    },
-    methods: {
-      handleSelectionChange(val) {
-        console.log(val);
+import UE from "../../common/ueditor";
+export default {
+  data() {
+    return {
+      textarea: "",
+      submit: false,
+      comment: false,
+      config: {
+        initialFrameWidth: null,
+        initialFrameHeight: 350
       },
-      handleClose(done) {
-        done();
-      }
+      input: "",
+      dialogVisible: false,
+      value: "",
+      options: [],
+      currentPage: 1,
+      tableData3: [],
+      carLives: {},
+      options: []
+    };
+  },
+  components: {
+    UE
+  },
+  methods: {
+    //上传图片
+    imgChange(e) {
+      console.log("上传");
+      this.tools.uploads(e).then(res => {
+        console.log(res);
+      });
+    },
+    //获取车生活分类列表
+    carLive() {
+      this.$post("admin/article/carlife/getCarLifeCategoryList").then(res => {
+        res.data.forEach(i => {
+          let json = {
+            value: i.c_id,
+            label: i.c_name
+          };
+          this.options.push(json);
+        });
+      });
+    },
+    //置顶
+    top(num, id) {
+      this.$post("admin/article/carlife/carLifeTop", { id: id, top: num }).then(
+        res => {
+          if (res.code == 0) {
+            this.$message(res.msg);
+            this.gitList();
+          }
+        }
+      );
+    },
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+    },
+    handleClose(done) {
+      done();
+    },
+    //上下线
+    status() {},
+    //保存
+    save() {
+      console.log(this.$refs.ue.getUEContent());
+    },
+    // 添加
+    add() {},
+    handleSelectionChange(val) {
+      console.log(val);
+    },
+    demo(item) {
+      console.log(item);
+    },
+    gitList() {
+      this.$post("admin/article/carlife/getCarLifeList").then(res => {
+        console.log(res);
+        this.tableData3 = res.data;
+      });
     }
-  };
-
+  },
+  mounted() {
+    this.gitList();
+    this.carLive();
+  }
+};
 </script>
 
 <style scoped>
+.center {
+  width: 700px;
+}
 
+.commentList img {
+  width: 50px;
+  float: left;
+}
 
+commentList li {
+  margin-bottom: 20px;
+}
+
+.describe {
+  margin-left: 60px;
+}
+
+.describe_p {
+  margin: 5px 0;
+}
 </style>

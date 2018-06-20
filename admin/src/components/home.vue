@@ -13,38 +13,48 @@
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        activeIndex: "/home/content",
-      };
-    },
-    methods: {
-      handleSelect(key, keyPath) {
-        console.log(key, keyPath);
-      }
+export default {
+  data() {
+    return {
+      activeIndex: "/home/content"
+    };
+  },
+  methods: {
+    handleSelect(key, keyPath) {
+      console.log(key, keyPath);
     }
-  };
-
+  },
+  mounted() {
+    if (!this.$cookies.get("info")) {
+      this.$post("admin/user/auth/login", {
+        username: "admin",
+        password: 123456
+      }).then(res => {
+        console.log(res);
+        this.$cookies.set("info", JSON.stringify(res.data));
+        console.log(JSON.parse(this.$cookies.get("info")));
+      });
+    }
+  }
+};
 </script>
 
 <style scoped>
-  .banxin {
-    width: 1600px;
-    margin: 0 auto;
-  }
+.banxin {
+  width: 1600px;
+  margin: 0 auto;
+}
 
-  .head {
-    overflow: hidden;
-  }
+.head {
+  overflow: hidden;
+}
 
-  .head img {
-    float: left;
-    height: 60px;
-  }
+.head img {
+  float: left;
+  height: 60px;
+}
 
-  .head .el-menu-demo {
-    float: left;
-  }
-
+.head .el-menu-demo {
+  float: left;
+}
 </style>
