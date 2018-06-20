@@ -1,6 +1,9 @@
 import axios from 'axios'
 import qs from 'qs'
 const cookies = require('vue-cookies')
+import {
+  Message
+} from 'element-ui'
 // console.log(JSON.parse(this.$cookies.get('info')))
 
 // console.log(this.$store.state.info)
@@ -8,7 +11,7 @@ axios.defaults.timeout = 5000
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded' // 请求头
 axios.defaults.baseURL = 'http://api.6che.vip' // ip
 axios.interceptors.request.use((config) => {
-let rule5 = config.url.indexOf('share/')
+  let rule5 = config.url.indexOf('share/')
   if (config.method === 'post') {
     config.data = qs.stringify(config.data)
   }
@@ -26,7 +29,10 @@ export function fetch(url, params) {
       .then(response => {
         resolve(response.data)
       }).catch((error) => {
-        console.log(error)
+        Message({
+          message: '网络请求数据异常',
+          type: 'warning'
+        });
       })
   })
 }

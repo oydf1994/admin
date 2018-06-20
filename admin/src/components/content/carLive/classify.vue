@@ -42,8 +42,8 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[100, 200, 300, 400]"
-      :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400">
+    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[20]"
+      :page-size="100" layout="total, prev, pager, next, jumper" :total="page.total">
     </el-pagination>
     <transition name="el-fade-in-linear">
       <div v-show="dialogVisible" class="cpm center">
@@ -159,7 +159,8 @@ export default {
         imgUrl: ""
       },
       options: [],
-      reviewList: []
+      reviewList: [],
+      page:{}
     };
   },
   components: {
@@ -313,6 +314,7 @@ export default {
       this.$post("admin/article/carlife/getCarLifeList").then(res => {
         console.log(res);
         this.tableData3 = res.data;
+        this.page = res.page
         this.carLives = {
           imgUrl: ""
         };
