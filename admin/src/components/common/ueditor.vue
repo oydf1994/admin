@@ -26,6 +26,9 @@ export default {
     // });
   },
   methods: {
+    setUEContent(content) {
+      this.editor.setContent(content);
+    },
     getUEContent() {
       // 获取内容方法
       return this.editor.getContent();
@@ -37,7 +40,7 @@ export default {
 };
 </script>
 <style scoped>
-#editor{
-    z-index: 9999;
+#editor {
+  z-index: 9999;
 }
 </style>

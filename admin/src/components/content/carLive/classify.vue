@@ -2,15 +2,15 @@
   <div>
     <div>
       <el-button size="small" type="primary" icon="el-icon-plus" @click="dialogVisible = true">添加</el-button>
-      <el-button size="small" type="primary" icon="el-icon-close">批量删除</el-button>
+      <el-button size="small" type="primary" icon="el-icon-close" @click="batchDel">批量删除</el-button>
       <span>分类:</span>
-      <el-select v-model="value" placeholder="请选择" size="small">
+      <el-select v-model="value" placeholder="请选择" size="small" @change="classifyChange">
         <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
         </el-option>
       </el-select>
       <span>关键字:</span>
       <el-input v-model="input" placeholder="请输入内容" size="small"></el-input>
-      <el-button size="small" type="primary">查询</el-button>
+      <el-button size="small" type="primary" @click="btn">查询</el-button>
     </div>
     <el-table ref="multipleTable" :data="tableData3" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55">
@@ -20,12 +20,12 @@
       </el-table-column>
       <el-table-column prop="category_name" label="所属分类" width="120">
       </el-table-column>
-      <el-table-column label="浏览量"   prop="click" show-overflow-tooltip>
+      <el-table-column label="浏览量" prop="click" show-overflow-tooltip>
       </el-table-column>
       <el-table-column prop="comment" label="评论量" show-overflow-tooltip>
       </el-table-column>
       <el-table-column prop="status" label="状态" show-overflow-tooltip>
-          <template slot-scope="scope">
+        <template slot-scope="scope">
           <a href="#" v-if="scope.row.status == 0" @click="status(0)">上线</a>
           <a href="#" v-if="scope.row.status == 1" @click="status(1)">下线</a>
         </template>
@@ -36,9 +36,9 @@
         <template slot-scope="scope">
           <el-button type="text" size="small" v-if="scope.row.top == 0" @click="top(1,scope.row.id)">置顶</el-button>
           <el-button type="text" size="small" v-if="scope.row.top == 1" @click="top(0,scope.row.id)">取消置顶</el-button>
-          <el-button type="text" size="small">编辑</el-button>
+          <el-button type="text" size="small" @click="edit(scope.row)">编辑</el-button>
           <el-button type="text" size="small">删除</el-button>
-          <el-button type="text" size="small" @click="comment = true">评论</el-button>
+          <el-button type="text" size="small" @click="review(scope.row.id)">评论</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -67,32 +67,32 @@
             <span class="span">副标题:</span>
             <el-input v-model="input" placeholder="请输入内容" size="small"></el-input>
           </div> -->
-          <!-- <div class="cpm_line">
-            <span class="span">是否评论:</span>
-            <el-input v-model="input" placeholder="请输入内容" size="small"></el-input>
-          </div> -->
-           <div class="cpm_line">
+          <div class="cpm_line">
             <span class="span">文章类型:</span>
-             <el-radio-group v-model="carLives.type">
-            <el-radio label='1'>图文文章</el-radio>
-            <el-radio label='2'>视频文章</el-radio>
-          </el-radio-group>
+            <el-radio-group v-model="carLives.type">
+              <el-radio label='1'>图文文章</el-radio>
+              <el-radio label='2'>视频文章</el-radio>
+            </el-radio-group>
           </div>
           <div class="cpm_line">
             <span class="span">是否上线:</span>
             <el-radio-group v-model="carLives.status">
-            <el-radio label='1'>上线</el-radio>
-            <el-radio label='0'>隐藏</el-radio>
-          </el-radio-group>
+              <el-radio label='1'>上线</el-radio>
+              <el-radio label='0'>隐藏</el-radio>
+            </el-radio-group>
           </div>
           <div class="cpm_img">
             <span>封面:</span>
             <div class="addImg">
-              <img src="../../../assets/images/add_image@2x.png" alt="">
+              <img src="../../../assets/images/add_image@2x.png" alt="" id="addImg">
               <input type="file" @change="imgChange">
             </div>
           </div>
           <div>
+            <div class="cpm_line">
+              <span class="span">视频地址:</span>
+              <el-input v-model="carLives.video" placeholder="请输入内容" size="small"></el-input>
+            </div>
             <div class="editor-container">
               <UE :config='config' ref="ue"></UE>
             </div>
@@ -114,17 +114,16 @@
           </div>
           <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="textarea" v-if="submit"></el-input>
         </div>
-
         <ul class="commentList">
-          <li>
+          <li v-for="item in reviewList">
             <img src="./../../../assets/images/u542.jpg" alt="">
             <div class="describe">
               <div>
-                <span>无敌美少女</span>
-                <span>2018-6-9 18:14</span>
+                <span>{{item.nick_name}}</span>
+                <span>{{item.create_time}}</span>
               </div>
-              <p class="describe_p">身后有余忘缩手，眼前无路想回头，高峰时不得瑟，低谷时不坠落，不自怨自艾，什么时候都要记住一步一个脚印</p>
-              <a href="javascript:;">删除</a>
+              <p class="describe_p">{{item.content}}</p>
+              <a href="javascript:;" @click="delReview(item)">删除</a>
             </div>
           </li>
         </ul>
@@ -155,19 +154,100 @@ export default {
       options: [],
       currentPage: 1,
       tableData3: [],
-      carLives: {},
-      options: []
+      selList: [],
+      carLives: {
+        imgUrl: ""
+      },
+      options: [],
+      reviewList: []
     };
   },
   components: {
     UE
   },
   methods: {
+    //删除评论
+    delReview(item) {
+      this.$post("admin/article/carlife/delCarLifeComment", {
+        comment_id: item.comment_id
+      }).then(res => {
+        this.$message(res.msg);
+        this.review(item.life_id)
+      });
+    },
+    //评论列表
+    review(id) {
+      this.comment = true;
+      this.$post("admin/article/carlife/getCarLifeComment", {
+        life_id: id
+      }).then(res => {
+        this.reviewList = res.data;
+        console.log(res);
+      });
+    },
+    //批量删除
+    batchDel() {
+      this.$post("admin/article/carlife/delCarLife", {
+        ids: this.selList
+          .map(i => {
+            return i.id;
+          })
+          .join(",")
+      }).then(res => {
+        if (res.code == 0) {
+          this.gitList();
+        }
+        this.$message(res.msg);
+        console.log(res);
+      });
+    },
+    //点击查询
+    btn() {
+      this.$post("admin/article/carlife/getCarLifeList", {
+        keyword: this.input
+      }).then(res => {
+        console.log(res);
+        this.tableData3 = res.data;
+        this.$message(res.msg);
+        this.carLives = {
+          imgUrl: ""
+        };
+      });
+    },
+    //选择分类
+    classifyChange() {
+      this.$post("admin/article/carlife/getCarLifeList", {
+        c_id: this.value
+      }).then(res => {
+        console.log(res);
+        this.tableData3 = res.data;
+        this.$message(res.msg);
+        this.carLives = {
+          imgUrl: ""
+        };
+      });
+    },
+    //编辑
+    edit(item) {
+      this.dialogVisible = true;
+      console.log(item);
+      if (item.image) {
+        document.querySelector("#addImg").src = item.image;
+      }
+      this.$refs.ue.setUEContent(item.content);
+      this.carLives = item;
+    },
     //上传图片
     imgChange(e) {
       console.log("上传");
       this.tools.uploads(e).then(res => {
         console.log(res);
+        if (res) {
+          this.carLives.imgUrl = res;
+          document.querySelector("#addImg").src = res;
+        } else {
+          this.$message("上传图片失败");
+        }
       });
     },
     //获取车生活分类列表
@@ -184,14 +264,15 @@ export default {
     },
     //置顶
     top(num, id) {
-      this.$post("admin/article/carlife/carLifeTop", { id: id, top: num }).then(
-        res => {
-          if (res.code == 0) {
-            this.$message(res.msg);
-            this.gitList();
-          }
+      this.$post("admin/article/carlife/carLifeTop", {
+        id: id,
+        top: num
+      }).then(res => {
+        if (res.code == 0) {
+          this.$message(res.msg);
+          this.gitList();
         }
-      );
+      });
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
@@ -206,12 +287,24 @@ export default {
     status() {},
     //保存
     save() {
-      console.log(this.$refs.ue.getUEContent());
+      this.carLives.content = this.$refs.ue.getUEContent();
+      this.carLives.content = this.carLives.content.replace("\\", "");
+      console.log(this.carLives);
+      this.$post("admin/article/carlife/handleCarLife", this.carLives).then(
+        res => {
+          if (res.code == 0) {
+            this.dialogVisible = false;
+            this.gitList();
+          }
+          this.$message(res.msg);
+        }
+      );
     },
     // 添加
     add() {},
     handleSelectionChange(val) {
       console.log(val);
+      this.selList = val;
     },
     demo(item) {
       console.log(item);
@@ -220,6 +313,9 @@ export default {
       this.$post("admin/article/carlife/getCarLifeList").then(res => {
         console.log(res);
         this.tableData3 = res.data;
+        this.carLives = {
+          imgUrl: ""
+        };
       });
     }
   },
@@ -240,8 +336,9 @@ export default {
   float: left;
 }
 
-commentList li {
+.commentList li {
   margin-bottom: 20px;
+  margin-top: 10px;
 }
 
 .describe {

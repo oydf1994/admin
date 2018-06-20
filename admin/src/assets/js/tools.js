@@ -15,14 +15,14 @@ export let tools = {
       }
       reader.readAsDataURL(file); // 读出 base64
       reader.onloadend = () => {
-        fetch('/store/system/Qiniu/uploads', {
+        fetch('/share/system/Qiniu/uploads', {
           key: key,
           image: reader.result
         }).then(res => {
           if (res.code == 0) {
             resolve(`${res.data.domain}/${key}`)
           } else {
-            resolve(res)
+            resolve(0)
           }
         })
       };
