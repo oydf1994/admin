@@ -13,20 +13,31 @@
       <el-table-column type="selection" width="55">
       </el-table-column>
       <el-table-column label="主题" width="120">
-        <template slot-scope="scope">{{ scope.row.date }}</template>
+        <template slot-scope="scope">{{ scope.row.theme }}</template>
       </el-table-column>
-      <el-table-column prop="name" label="banner图" width="120">
+      <el-table-column prop="image" label="banner图" width="120">
+        <template slot-scope="scope">
+          <img :src="scope.row.image" alt="" width="50" height="50">
+        </template>
       </el-table-column>
       <el-table-column label="上传时间" show-overflow-tooltip>
         <template slot-scope="scope">
-          <a href="#">{{scope.row.address}}</a>
+          {{scope.row.create_time}}
         </template>
       </el-table-column>
-      <el-table-column prop="address" label="状态" show-overflow-tooltip>
+      <el-table-column prop="status" label="状态" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <span v-if="scope.row.status == 1">上线</span>
+          <span v-if="scope.row.status == 0">下线</span>
+        </template>
       </el-table-column>
-      <el-table-column prop="address" label="排序" show-overflow-tooltip>
+      <el-table-column prop="sort" label="排序" show-overflow-tooltip>
       </el-table-column>
       <el-table-column prop="address" label="操作" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <el-button type="primary" @click="edit(scope.row)">编辑</el-button>
+          <el-button type="primary" @click="del(scope.row.banner_id)">删除</el-button>
+        </template>
       </el-table-column>
     </el-table>
     <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[100, 200, 300, 400]"
@@ -41,22 +52,25 @@
         <div class="cpm_body">
           <div class="cpm_line">
             <span class="span">主题:</span>
-            <el-input v-model="input" placeholder="请输入内容" size="small"></el-input>
+            <el-input v-model="banner.theme" placeholder="请输入内容" size="small"></el-input>
           </div>
           <div class="cpm_img">
             <span>bannner图:</span>
-            <img src="./../../../assets/images/LOGO.png" alt="">
+            <div class="addImg">
+            <img src="../../../assets/images/add_image@2x.png" alt="" id="addImg">
+            <input type="file" @change="imgChange">
+          </div>
           </div>
           <div class="cpm_line">
             <span class="span">是否上线:</span>
-            <el-radio-group v-model="radio2">
-            <el-radio label='1'>上线</el-radio>
-            <el-radio label='2'>隐藏</el-radio>
-          </el-radio-group>
+            <el-radio-group v-model="banner.status + ''">
+              <el-radio label='1'>上线</el-radio>
+              <el-radio label='0'>下线</el-radio>
+            </el-radio-group>
           </div>
-           <div class="cpm_line">
+          <div class="cpm_line">
             <span class="span">排序:</span>
-            <el-input v-model="input" placeholder="请输入内容" size="small"></el-input>
+            <el-input v-model="banner.sort" placeholder="请输入内容" size="small"></el-input>
           </div>
           <div>
           </div>
@@ -85,29 +99,9 @@ export default {
       dialogVisible: false,
       value: "",
       options: [],
+      banner: {},
       currentPage: 1,
-      tableData3: [
-        {
-          date: "2016-05-02",
-          name: "1",
-          address: "上海市"
-        },
-        {
-          date: "2016-05-04",
-          name: "2",
-          address: " 1517 弄"
-        },
-        {
-          date: "2016-05-01",
-          name: "3",
-          address: " 1519 弄"
-        },
-        {
-          date: "2016-05-03",
-          name: "4",
-          address: " 1516 弄"
-        }
-      ],
+      tableData3: [],
       options: [
         {
           value: "选项1",
@@ -116,7 +110,35 @@ export default {
       ]
     };
   },
+  mounted() {
+    this.gitList();
+  },
   methods: {
+    // 删除
+    del(id){
+      this.$post('admin/other/banner/delBanner',{banner_id:id}).then(res=>{
+        this.$message(res.msg)
+        this.gitList();
+      })
+    },
+    //上传图片
+    imgChange(e) {
+      this.tools.uploads(e).then(res => {
+        if (res) {
+          this.banner.image = res;
+          document.querySelector("#addImg").src = res;
+        } else {
+          this.$message("上传图片失败");
+        }
+      });
+    },
+    //编辑
+    edit(item) {
+      document.querySelector('#addImg').src = item.image
+      this.banner = item;
+      console.log(item)
+      this.dialogVisible = true;
+    },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
     },
@@ -128,7 +150,11 @@ export default {
     },
     //保存
     save() {
-        this.dialogVisible = false
+      this.$post("admin/other/banner/handleBanner", this.banner).then(res => {
+        this.dialogVisible = false;
+        this.$message(res.msg);
+        this.gitList();
+      });
     },
     // 添加
     add() {},
@@ -137,6 +163,12 @@ export default {
     },
     demo(item) {
       console.log(item);
+    },
+    gitList() {
+      this.$post("admin/other/banner/getBannerList").then(res => {
+        console.log(res);
+        this.tableData3 = res.data;
+      });
     }
   }
 };
