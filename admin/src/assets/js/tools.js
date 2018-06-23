@@ -27,5 +27,6 @@ export let tools = {
         })
       };
     })
-  }
+  },
+  img:require('./../images/add_image@2x.png')
 }

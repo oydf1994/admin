@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <el-button size="small" type="primary" icon="el-icon-plus" @click="dialogVisible = true">新增</el-button>
+      <el-button size="small" type="primary" icon="el-icon-plus" @click="addItem">新增</el-button>
       <span>主题:</span>
       <el-select v-model="value" placeholder="请选择" size="small">
         <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
@@ -114,12 +114,21 @@ export default {
     this.gitList();
   },
   methods: {
+    //新增
+    addItem() {
+      this.dialogVisible = true;
+      this.banner = {};
+      this.$refs.ue.setUEContent("");
+      document.querySelector("#addImg").src = this.tools.img;
+    },
     // 删除
-    del(id){
-      this.$post('admin/other/banner/delBanner',{banner_id:id}).then(res=>{
-        this.$message(res.msg)
-        this.gitList();
-      })
+    del(id) {
+      this.$post("admin/other/banner/delBanner", { banner_id: id }).then(
+        res => {
+          this.$message(res.msg);
+          this.gitList();
+        }
+      );
     },
     //上传图片
     imgChange(e) {
@@ -134,9 +143,9 @@ export default {
     },
     //编辑
     edit(item) {
-      document.querySelector('#addImg').src = item.image
+      document.querySelector("#addImg").src = item.image;
       this.banner = item;
-      console.log(item)
+      console.log(item);
       this.dialogVisible = true;
     },
     handleSizeChange(val) {

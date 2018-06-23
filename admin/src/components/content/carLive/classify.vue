@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <el-button size="small" type="primary" icon="el-icon-plus" @click="dialogVisible = true">添加</el-button>
+      <el-button size="small" type="primary" icon="el-icon-plus" @click="addItem">添加</el-button>
       <el-button size="small" type="primary" icon="el-icon-close" @click="batchDel">批量删除</el-button>
       <span>分类:</span>
       <el-select v-model="value" placeholder="请选择" size="small" @change="classifyChange">
@@ -167,6 +167,13 @@ export default {
     UE
   },
   methods: {
+    //新增
+    addItem(){
+      this.dialogVisible = true;
+      this.carLives = {imgUrl: ""};
+      this.$refs.ue.setUEContent('');
+      document.querySelector("#addImg").src = this.tools.img;
+    },
     //删除评论
     delReview(item) {
       this.$post("admin/article/carlife/delCarLifeComment", {

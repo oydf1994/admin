@@ -4,7 +4,8 @@ Vue.use(vuex);
 
 export default new vuex.Store({
     state:{
-        info:{}
+        info:{},
+        pageList:[20,50,100]
     },
     mutations:{
         dataMsg(state,list){

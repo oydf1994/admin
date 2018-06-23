@@ -7,7 +7,7 @@
         <el-tab-pane label="软件介绍" name="/home/content/msgManage/introduce"></el-tab-pane>
         <el-tab-pane label="客户案例" name="/home/content/msgManage/client"></el-tab-pane>
         <el-tab-pane label="新闻资讯" name="/home/content/msgManage/news"></el-tab-pane>
-        <el-tab-pane label="友链管理" name="/home/content/msgManage/links"></el-tab-pane>
+        <el-tab-pane label="友链管理" name="/home/content/msgManage/links/friendship"></el-tab-pane>
         <el-tab-pane label="关于我们" name="/home/content/msgManage/About"></el-tab-pane>
       </el-tabs>
     </div>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <el-button size="small" type="primary" icon="el-icon-plus" @click="dialogVisible = true">新增分类</el-button>
+      <el-button size="small" type="primary" icon="el-icon-plus" @click="addItem">新增分类</el-button>
       <span>关键字:</span>
       <el-input v-model="input" placeholder="请输入内容" size="small"></el-input>
       <el-button size="small" type="primary" @click="btn">查询</el-button>
@@ -95,6 +95,12 @@ export default {
     };
   },
   methods: {
+    //新增
+    addItem(){
+       this.dialogVisible = true;
+      this.fault = {};
+      document.querySelector("#addImg").src = this.tools.img;
+    },
     //关键字查询
     btn() {
       this.$post("admin/article/fault/getFaultCategoryList", {

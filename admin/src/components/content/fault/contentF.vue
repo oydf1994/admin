@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <el-button size="small" type="primary" icon="el-icon-plus" @click="dialogVisible = true">新增</el-button>
+      <el-button size="small" type="primary" icon="el-icon-plus" @click="dialogVisible = true;fault={}">新增</el-button>
       <el-button size="small" type="primary" icon="el-icon-close" @click="batchDel">批量删除</el-button>
       <span>关键字:</span>
       <el-input v-model="input" placeholder="请输入内容" size="small"></el-input>
