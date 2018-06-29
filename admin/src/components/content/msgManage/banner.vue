@@ -40,9 +40,6 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[100, 200, 300, 400]"
-      :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400">
-    </el-pagination>
     <transition name="el-fade-in-linear">
       <div v-show="dialogVisible" class="cpm center">
         <div class="cpm_tit">
@@ -57,13 +54,13 @@
           <div class="cpm_img">
             <span>bannner图:</span>
             <div class="addImg">
-            <img src="../../../assets/images/add_image@2x.png" alt="" id="addImg">
-            <input type="file" @change="imgChange">
-          </div>
+              <img src="../../../assets/images/add_image@2x.png" alt="" id="addImg">
+              <input type="file" @change="imgChange">
+            </div>
           </div>
           <div class="cpm_line">
             <span class="span">是否上线:</span>
-            <el-radio-group v-model="banner.status + ''">
+            <el-radio-group v-model="banner.status">
               <el-radio label='1'>上线</el-radio>
               <el-radio label='0'>下线</el-radio>
             </el-radio-group>
@@ -85,114 +82,121 @@
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      radio2: "1",
-      textarea: "",
-      submit: false,
-      config: {
-        initialFrameWidth: null,
-        initialFrameHeight: 350
-      },
-      input: "",
-      dialogVisible: false,
-      value: "",
-      options: [],
-      banner: {},
-      currentPage: 1,
-      tableData3: [],
-      options: [
-        {
+  export default {
+    data() {
+      return {
+        radio2: "1",
+        textarea: "",
+        submit: false,
+        config: {
+          initialFrameWidth: null,
+          initialFrameHeight: 350
+        },
+        input: "",
+        dialogVisible: false,
+        value: "",
+        options: [],
+        banner: {},
+        currentPage: 1,
+        tableData3: [],
+        options: [{
           value: "选项1",
           label: "黄金糕"
-        }
-      ]
-    };
-  },
-  mounted() {
-    this.gitList();
-  },
-  methods: {
-    //新增
-    addItem() {
-      this.dialogVisible = true;
-      this.banner = {};
-      this.$refs.ue.setUEContent("");
-      document.querySelector("#addImg").src = this.tools.img;
+        }]
+      };
     },
-    // 删除
-    del(id) {
-      this.$post("admin/other/banner/delBanner", { banner_id: id }).then(
-        res => {
+    mounted() {
+      this.gitList();
+    },
+    methods: {
+      //新增
+      addItem() {
+        this.dialogVisible = true;
+        this.banner = {};
+        document.querySelector("#addImg").src = this.tools.img;
+      },
+      // 删除
+      del(id) {
+        this.$confirm('是否确认删除该选项?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$post("admin/other/banner/delBanner", {
+            banner_id: id
+          }).then(
+            res => {
+              this.$message(res.msg);
+              this.gitList();
+            }
+          );
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+      },
+      //上传图片
+      imgChange(e) {
+        this.tools.uploads(e).then(res => {
+          if (res) {
+            this.banner.image = res;
+            document.querySelector("#addImg").src = res;
+          } else {
+            this.$message("上传图片失败");
+          }
+        });
+      },
+      //编辑
+      edit(item) {
+        item.status = item.status + ''
+        document.querySelector("#addImg").src = item.image;
+        this.banner = item;
+        console.log(item);
+        this.dialogVisible = true;
+      },
+      handleClose(done) {
+        done();
+      },
+      //保存
+      save() {
+        this.$post("admin/other/banner/handleBanner", this.banner).then(res => {
+          this.dialogVisible = false;
           this.$message(res.msg);
           this.gitList();
-        }
-      );
-    },
-    //上传图片
-    imgChange(e) {
-      this.tools.uploads(e).then(res => {
-        if (res) {
-          this.banner.image = res;
-          document.querySelector("#addImg").src = res;
-        } else {
-          this.$message("上传图片失败");
-        }
-      });
-    },
-    //编辑
-    edit(item) {
-      document.querySelector("#addImg").src = item.image;
-      this.banner = item;
-      console.log(item);
-      this.dialogVisible = true;
-    },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-    },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
-    },
-    handleClose(done) {
-      done();
-    },
-    //保存
-    save() {
-      this.$post("admin/other/banner/handleBanner", this.banner).then(res => {
-        this.dialogVisible = false;
-        this.$message(res.msg);
-        this.gitList();
-      });
-    },
-    // 添加
-    add() {},
-    handleSelectionChange(val) {
-      console.log(val);
-    },
-    demo(item) {
-      console.log(item);
-    },
-    gitList() {
-      this.$post("admin/other/banner/getBannerList").then(res => {
-        console.log(res);
-        this.tableData3 = res.data;
-      });
+        });
+      },
+      // 添加
+      add() {},
+      handleSelectionChange(val) {
+        console.log(val);
+      },
+      demo(item) {
+        console.log(item);
+      },
+      gitList() {
+        this.$post("admin/other/banner/getBannerList").then(res => {
+          console.log(res);
+          this.tableData3 = res.data;
+        });
+      }
     }
-  }
-};
+  };
+
 </script>
 
 <style scoped>
-.center {
-  width: 700px;
-}
+  .center {
+    width: 700px;
+  }
 
-.describe {
-  margin-left: 60px;
-}
+  .describe {
+    margin-left: 60px;
+  }
 
-.describe_p {
-  margin: 5px 0;
-}
+  .describe_p {
+    margin: 5px 0;
+  }
+
 </style>

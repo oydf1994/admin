@@ -9,6 +9,8 @@
         <el-tab-pane label="新闻资讯" name="/home/content/msgManage/news"></el-tab-pane>
         <el-tab-pane label="友链管理" name="/home/content/msgManage/links/friendship"></el-tab-pane>
         <el-tab-pane label="关于我们" name="/home/content/msgManage/About"></el-tab-pane>
+        <el-tab-pane label="产品系列" name="/home/content/msgManage/product"></el-tab-pane>
+        <el-tab-pane label="解决方案" name="/home/content/msgManage/precept"></el-tab-pane>
       </el-tabs>
     </div>
     <router-view/>

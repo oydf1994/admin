@@ -83,153 +83,164 @@
 </template>
 
 <script>
-import UE from "../../common/ueditor";
-export default {
-  data() {
-    return {
-      radio2: "",
-      textarea: "",
-      submit: false,
-      config: {
-        initialFrameWidth: null,
-        initialFrameHeight: 350
-      },
-      input: "",
-      dialogVisible: false,
-      value: "",
-      client: {},
-      options: [],
-      currentPage: 1,
-      tableData3: [],
-      page: {
-        total: 0
-      },
-      options: [
-        {
+  import UE from "../../common/ueditor";
+  export default {
+    data() {
+      return {
+        radio2: "",
+        textarea: "",
+        submit: false,
+        config: {
+          initialFrameWidth: null,
+          initialFrameHeight: 350
+        },
+        input: "",
+        dialogVisible: false,
+        value: "",
+        client: {},
+        options: [],
+        currentPage: 1,
+        tableData3: [],
+        page: {
+          total: 0
+        },
+        options: [{
           value: "选项1",
           label: "黄金糕"
+        }]
+      };
+    },
+    components: {
+      UE
+    },
+    methods: {
+      // 新增
+      addItem() {
+        this.dialogVisible = true;
+        this.client = {};
+        this.$refs.ue.setUEContent('');
+        document.querySelector("#addImg").src = this.tools.img;
+      },
+      //删除
+      del(id) {
+        this.$confirm('是否确认删除该选项?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$post("admin/other/cases/delCases", {
+            cases_id: id
+          }).then(res => {
+            this.$message(res.msg);
+            this.gitList();
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+      },
+      //编辑
+      handleClick(item) {
+        this.dialogVisible = true;
+        this.client = item;
+        if (item.video_image) {
+          document.querySelector("#addImg").src = item.video_image;
         }
-      ]
-    };
-  },
-  components: {
-    UE
-  },
-  methods: {
-    // 新增
-    addItem() {
-      this.dialogVisible = true;
-      this.client = {};
-      this.$refs.ue.setUEContent('');
-      document.querySelector("#addImg").src = this.tools.img;
-    },
-    //删除
-    del(id) {
-      this.$post("admin/other/cases/delCases", {
-        cases_id: id
-      }).then(res => {
-        this.$message(res.msg);
-        this.gitList();
-      });
-    },
-    //编辑
-    handleClick(item) {
-      this.dialogVisible = true;
-      this.client = item;
-      if (item.video_image) {
-        document.querySelector("#addImg").src = item.video_image;
+        this.$refs.ue.setUEContent(item.content);
+      },
+      //上传图片
+      imgChange(e) {
+        console.log("上传");
+        this.tools.uploads(e).then(res => {
+          console.log(res);
+          if (res) {
+            this.client.video_image = res;
+            document.querySelector("#addImg").src = res;
+          } else {
+            this.$message("上传图片失败");
+          }
+        });
+      },
+      //按关键字查询列表
+      btn() {
+        this.$post("admin/other/cases/getCasesList", {
+          keyword: this.input
+        }).then(res => {
+          this.tableData3 = res.data;
+          this.$message(res.msg);
+        });
+      },
+      handleSizeChange(val) {
+        this.$post("admin/other/cases/getCasesList", {
+          pageSize: val
+        }).then(res => {
+          this.tableData3 = res.data;
+          this.page = res.page;
+        });
+        console.log(`每页 ${val} 条`);
+      },
+      handleCurrentChange(val) {
+        this.$post("admin/other/cases/getCasesList", {
+          page: val
+        }).then(res => {
+          this.tableData3 = res.data;
+          this.page = res.page;
+        });
+        console.log(`当前页: ${val}`);
+      },
+      handleClose(done) {
+        done();
+      },
+      //保存
+      save() {
+        this.client.content = this.$refs.ue.getUEContent();
+        this.client.content = this.client.content.replace("\\", "");
+        console.log(this.client.content);
+        this.$post("admin/other/cases/handleCases", this.client).then(res => {
+          if (res.code == 0) {
+            this.gitList();
+            this.dialogVisible = false;
+          }
+          this.$message(res.msg);
+        });
+      },
+      // 添加
+      add() {},
+      handleSelectionChange(val) {
+        console.log(val);
+      },
+      //获取案列列表
+      gitList() {
+        this.$post("admin/other/cases/getCasesList").then(res => {
+          console.log(res);
+          this.tableData3 = res.data;
+          this.page = res.page;
+        });
+      },
+      demo(item) {
+        console.log(item);
       }
-      this.$refs.ue.setUEContent(item.content);
     },
-    //上传图片
-    imgChange(e) {
-      console.log("上传");
-      this.tools.uploads(e).then(res => {
-        console.log(res);
-        if (res) {
-          this.client.video_image = res;
-          document.querySelector("#addImg").src = res;
-        } else {
-          this.$message("上传图片失败");
-        }
-      });
-    },
-    //按关键字查询列表
-    btn() {
-      this.$post("admin/other/cases/getCasesList", {
-        keyword: this.input
-      }).then(res => {
-        this.tableData3 = res.data;
-        this.$message(res.msg);
-      });
-    },
-    handleSizeChange(val) {
-      this.$post("admin/other/cases/getCasesList", {
-        pageSize: val
-      }).then(res => {
-        this.tableData3 = res.data;
-        this.page = res.page;
-      });
-      console.log(`每页 ${val} 条`);
-    },
-    handleCurrentChange(val) {
-      this.$post("admin/other/cases/getCasesList", {
-        page: val
-      }).then(res => {
-        this.tableData3 = res.data;
-        this.page = res.page;
-      });
-      console.log(`当前页: ${val}`);
-    },
-    handleClose(done) {
-      done();
-    },
-    //保存
-    save() {
-      this.client.content = this.$refs.ue.getUEContent();
-      this.client.content = this.client.content.replace("\\", "");
-      console.log(this.client.content);
-      this.$post("admin/other/cases/handleCases", this.client).then(res => {
-        if (res.code == 0) {
-          this.gitList();
-          this.dialogVisible = false;
-        }
-        this.$message(res.msg);
-      });
-    },
-    // 添加
-    add() {},
-    handleSelectionChange(val) {
-      console.log(val);
-    },
-    //获取案列列表
-    gitList() {
-      this.$post("admin/other/cases/getCasesList").then(res => {
-        console.log(res);
-        this.tableData3 = res.data;
-        this.page = res.page;
-      });
-    },
-    demo(item) {
-      console.log(item);
+    mounted() {
+      this.gitList();
     }
-  },
-  mounted() {
-    this.gitList();
-  }
-};
+  };
+
 </script>
 
 <style scoped>
-.center {
-  width: 700px;
-}
+  .center {
+    width: 700px;
+  }
 
-.describe {
-  margin-left: 60px;
-}
+  .describe {
+    margin-left: 60px;
+  }
 
-.describe_p {
-  margin: 5px 0;
-}
+  .describe_p {
+    margin: 5px 0;
+  }
+
 </style>

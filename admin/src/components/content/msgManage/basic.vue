@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     btn() {
-      this.$post("admin/system/system/basicInfo", this.msg).then(res => {
+      this.$post("admin/system/system/setBasicInfo", this.msg).then(res => {
         if (res.code == 0) {
           this.$message("修改成功");
         } else {

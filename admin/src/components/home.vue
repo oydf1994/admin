@@ -25,16 +25,7 @@ export default {
     }
   },
   mounted() {
-    if (!this.$cookies.get("info")) {
-      this.$post("admin/user/auth/login", {
-        username: "admin",
-        password: 123456
-      }).then(res => {
-        console.log(res);
-        this.$cookies.set("info", JSON.stringify(res.data));
-        console.log(JSON.parse(this.$cookies.get("info")));
-      });
-    }
+    
   }
 };
 </script>

@@ -19,6 +19,7 @@
      * window.UEDITOR_HOME_URL = "/xxxx/xxxx/";
      */
     window.UEDITOR_HOME_URL = './../utf8-php/'
+    // var URL = '/o0PXQZCQIV4KtFO4/static/utf8-php/';
     var URL = '/static/utf8-php/';
 
     /**

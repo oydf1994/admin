@@ -6,7 +6,7 @@ Vue.use(Router)
 
 export default new Router({
   routes: [{
-    path: '/',
+    path: '/home',
     name: 'home',
     component: home,
     children: [{
@@ -41,6 +41,12 @@ export default new Router({
           children: [{
             path: '/home/content/msgManage/About',
             component: require('@/components/content/msgManage/About').default,
+          }, {
+            path: '/home/content/msgManage/product',
+            component: require('@/components/content/msgManage/product').default,
+          }, {
+            path: '/home/content/msgManage/precept',
+            component: require('@/components/content/msgManage/precept').default,
           }, {
             path: '/home/content/msgManage/banner',
             component: require('@/components/content/msgManage/banner').default,
@@ -77,5 +83,8 @@ export default new Router({
         }
       ]
     }]
+  }, {
+    path: '/',
+    component: require('@/components/login').default,
   }]
 })

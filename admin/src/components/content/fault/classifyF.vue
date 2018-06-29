@@ -112,11 +112,22 @@ export default {
     },
     //删除分类
     del(item) {
-      this.$post("admin/article/fault/delCategory", { c_id: item.c_id }).then(
+      this.$confirm('是否确认删除该选项?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+         this.$post("admin/article/fault/delCategory", { c_id: item.c_id }).then(
         res => {
           this.$message(res.msg);
         }
       );
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
     },
     //状态选择
     thread(num, c_id) {

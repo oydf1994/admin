@@ -3,7 +3,7 @@
     <div class="leftNav">
       <el-row class="tac">
         <el-col>
-          <el-menu default-active="/home/content/serviceItem" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" router>
+          <el-menu :default-active="path" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" router>
             <el-menu-item index="/home/content/serviceItem">
               <span slot="title">服务项目管理</span>
             </el-menu-item>
@@ -26,13 +26,22 @@
 
 <script>
 export default {
+  data() {
+    return {
+      path: ""
+    };
+  },
   methods: {
     handleOpen(key, keyPath) {
       console.log(key, keyPath);
     },
-    handleClose(done){
-      done()
+    handleClose(done) {
+      done();
     }
+  },
+  mounted () {
+    this.path = this.$route.path
+    console.log(this.$route.path)
   }
 };
 </script>

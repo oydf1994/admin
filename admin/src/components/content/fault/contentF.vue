@@ -24,7 +24,7 @@
             <i :class="item.flag?'el-icon-arrow-right icon rotate':'el-icon-arrow-right icon'"></i>
           </td>
           <td></td>
-          <td  width="500px"></td>
+          <td width="500px"></td>
           <td>{{item.describe}}</td>
         </tr>
         <tr v-show="item.flag" v-for="item1 in item.list">
@@ -37,12 +37,12 @@
           <td v-if="item1.status == 1">
             <a href="javascript:;">上线</a>
           </td>
-          <td v-if="item1.status == 2" >
+          <td v-if="item1.status == 2">
             <a href="javascript:;">下线</a>
           </td>
-          <td  width="500px">
+          <td width="500px">
             <a href="javascript:;" @click="look(item1)">查看故障</a>
-            <a href="javascript:;"  @click="edit(item1)">编辑</a>
+            <a href="javascript:;" @click="edit(item1)">编辑</a>
             <a href="javascript:;" @click="del(item1.fault_id)">删除</a>
           </td>
           <td>{{item.list.title}}</td>
@@ -103,154 +103,178 @@
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      dialogVisible2: false,
-      value: "",
-      radio2: "1",
-      checkAll: false,
-      checkedCities: [],
-      isIndeterminate: true,
-      textarea: "",
-      fault: {},
-      dialogVisible: false,
-      input: "",
-      tableData3: [],
-      options: [],
-      lookFault: {}
-    };
-  },
-  methods: {
-    //编辑
-    edit(item) {
-      console.log(item.status);
-      item.status += "";
-      this.dialogVisible = true;
-      this.fault = item;
+  export default {
+    data() {
+      return {
+        dialogVisible2: false,
+        value: "",
+        radio2: "1",
+        checkAll: false,
+        checkedCities: [],
+        isIndeterminate: true,
+        textarea: "",
+        fault: {},
+        dialogVisible: false,
+        input: "",
+        tableData3: [],
+        options: [],
+        lookFault: {}
+      };
     },
-    //查看故障
-    look(item) {
-      this.dialogVisible2 = true;
-      this.lookFault = item;
-    },
-    //增加,编辑
-    save() {
-      this.$post("admin/article/fault/handleFault", this.fault).then(res => {
-        if (res.code == 0) {
-          this.dialogVisible = false;
-          this.gitList();
-        }
-        this.$message(res.msg);
-      });
-    },
-    //关键字查询
-    btn() {
-      this.$post("admin/article/fault/getFaultList", {
-        keyword: this.input
-      }).then(res => {
-        res.data.forEach(element => {
-          element.flag = false;
+    methods: {
+      //编辑
+      edit(item) {
+        console.log(item.status);
+        item.status += "";
+        this.dialogVisible = true;
+        this.fault = item;
+      },
+      //查看故障
+      look(item) {
+        this.dialogVisible2 = true;
+        this.lookFault = item;
+      },
+      //增加,编辑
+      save() {
+        this.$post("admin/article/fault/handleFault", this.fault).then(res => {
+          if (res.code == 0) {
+            this.dialogVisible = false;
+            this.gitList();
+          }
+          this.$message(res.msg);
         });
-        this.tableData3 = res.data;
-        this.$message('操作成功');
-      });
-    },
-    // 批量删除
-    batchDel() {
-      console.log(this.checkedCities)
-      this.$post("admin/article/fault/delFault", {
-        ids: this.checkedCities
-          .map(i => {
-            return i.fault_id;
-          })
-          .join(",")
-      }).then(res => {
-        if (res.code == 0) {
-          this.gitList();
-        }
-        this.$message(res.msg);
-      });
-    },
-    //删除
-    del(id) {
-      this.$post("admin/article/fault/delFault", { ids: id }).then(res => {
-        this.$message(res.msg);
-        if (res.code == 0) {
-          this.gitList();
-        }
-      });
-    },
-    handleCheckedCitiesChange(value) {
-    },
-    handleSelectionChange(val) {
-      console.log(val);
-    },
-    handleClose(done) {
-      done();
-    },
-    gitList(keyword) {
-      this.$post("admin/article/fault/getFaultList").then(res => {
-        this.options = [];
-        res.data.forEach(element => {
-          element.flag = false;
-          let json = {
-            value: element.c_id,
-            label: element.c_name
-          };
-          this.options.push(json);
+      },
+      //关键字查询
+      btn() {
+        this.$post("admin/article/fault/getFaultList", {
+          keyword: this.input
+        }).then(res => {
+          res.data.forEach(element => {
+            element.flag = false;
+          });
+          this.tableData3 = res.data;
+          this.$message('操作成功');
         });
-        this.tableData3 = res.data;
-      });
+      },
+      // 批量删除
+      batchDel() {
+        this.$confirm('是否确认删除该选项?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$post("admin/article/fault/delFault", {
+            ids: this.checkedCities
+              .map(i => {
+                return i.fault_id;
+              })
+              .join(",")
+          }).then(res => {
+            if (res.code == 0) {
+              this.gitList();
+            }
+            this.$message(res.msg);
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+      },
+      //删除
+      del(id) {
+        this.$confirm('是否确认删除该选项?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$post("admin/article/fault/delFault", {
+          ids: id
+        }).then(res => {
+          this.$message(res.msg);
+          if (res.code == 0) {
+            this.gitList();
+          }
+        });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+      },
+      handleCheckedCitiesChange(value) {},
+      handleSelectionChange(val) {
+        console.log(val);
+      },
+      handleClose(done) {
+        done();
+      },
+      gitList(keyword) {
+        this.$post("admin/article/fault/getFaultList").then(res => {
+          this.options = [];
+          res.data.forEach(element => {
+            element.flag = false;
+            let json = {
+              value: element.c_id,
+              label: element.c_name
+            };
+            this.options.push(json);
+          });
+          this.tableData3 = res.data;
+        });
+      }
+    },
+    mounted() {
+      this.gitList();
     }
-  },
-  mounted() {
-    this.gitList();
-  }
-};
+  };
+
 </script>
 
 <style scoped>
-.table th {
-  white-space: nowrap;
-  overflow: hidden;
-  user-select: none;
-  background-color: #fff;
-  text-align: center;
-  border-bottom: 1px solid #ebeef5;
-  padding: 12px 10px;
-  min-width: 0;
-  color: #909399;
-  box-sizing: border-box;
-  text-overflow: ellipsis;
-  vertical-align: middle;
-}
+  .table th {
+    white-space: nowrap;
+    overflow: hidden;
+    user-select: none;
+    background-color: #fff;
+    text-align: center;
+    border-bottom: 1px solid #ebeef5;
+    padding: 12px 10px;
+    min-width: 0;
+    color: #909399;
+    box-sizing: border-box;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+  }
 
-.table {
-  width: 100%;
-}
+  .table {
+    width: 100%;
+  }
 
-.table td {
-  border-bottom: 1px solid #ebeef5;
-  padding: 12px 10px;
-  min-width: 0;
-  box-sizing: border-box;
-  text-overflow: ellipsis;
-  vertical-align: middle;
-  text-align: center;
-}
+  .table td {
+    border-bottom: 1px solid #ebeef5;
+    padding: 12px 10px;
+    min-width: 0;
+    box-sizing: border-box;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+    text-align: center;
+  }
 
-h5 {
-  font-size: 18px;
-  margin-bottom: 10px;
-  margin-top: 20px;
-}
+  h5 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    margin-top: 20px;
+  }
 
-.icon {
-  transition: all 0.5s;
-}
+  .icon {
+    transition: all 0.5s;
+  }
 
-.rotate {
-  transform: rotate(90deg);
-}
+  .rotate {
+    transform: rotate(90deg);
+  }
+
 </style>

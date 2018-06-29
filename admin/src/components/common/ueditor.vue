@@ -27,6 +27,7 @@ export default {
   },
   methods: {
     setUEContent(content) {
+      console.log(content)
       this.editor.setContent(content);
     },
     getUEContent() {
