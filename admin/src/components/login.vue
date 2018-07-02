@@ -17,6 +17,24 @@ export default {
     };
   },
   methods: {
+    enter() {
+      document.onkeydown = event => {
+        var e = event || window.event || arguments.callee.caller.arguments[0];
+        if (e && e.keyCode == 13) {
+          // enter 键
+          this.$post("admin/user/auth/login", {
+            username: this.userName,
+            password: this.password
+          }).then(res => {
+            this.$message(res.msg);
+            if (res.code == 0) {
+              this.$cookies.set("info", JSON.stringify(res.data));
+              this.$router.push("/home/content/carLive/manage");
+            }
+          });
+        }
+      };
+    },
     btn() {
       this.$post("admin/user/auth/login", {
         username: this.userName,
@@ -25,12 +43,14 @@ export default {
         this.$message(res.msg);
         if (res.code == 0) {
           this.$cookies.set("info", JSON.stringify(res.data));
-          this.$router.push('/home/content/carLive/manage')
+          this.$router.push("/home/content/carLive/manage");
         }
       });
     }
   },
-  mounted() {}
+  mounted() {
+    this.enter();
+  }
 };
 </script>
 

@@ -45,7 +45,7 @@
               <input type="file" @change="imgChange">
             </div>
           </div>
-           <div class="cpm_line">
+          <div class="cpm_line">
             <span class="span">视频链接:</span>
             <el-input v-model="product.url" placeholder="请输入内容" size="small"></el-input>
           </div>
@@ -61,8 +61,8 @@
             <el-input v-model="product.sort" placeholder="请输入内容" size="small"></el-input>
           </div>
           <div class="cpm_line" style="margin-bottom: 30px;height: 50px;">
-          <span class="span">视频简介:</span>
-          <el-input type="textarea" rows="3" style="width:400px" placeholder="请输入内容" v-model="product.describe"></el-input>
+            <span class="span">视频简介:</span>
+            <el-input type="textarea" rows="3" style="width:400px" placeholder="请输入内容" v-model="product.describe"></el-input>
           </div>
           <div>
             <div class="editor-container">
@@ -73,110 +73,114 @@
         <div class="cpm_btn">
           <el-button @click="dialogVisible = false">取 消</el-button>
           <el-button type="primary" @click="save">确 定</el-button>
+          <el-button type="primary" @click="$refs.primary.look($refs.ue.getUEContent())">预 览</el-button>
         </div>
       </div>
     </transition>
+    <primary ref="primary"></primary>
   </div>
 </template>
 
 <script>
-import UE from "../../common/ueditor";
-export default {
-  data() {
-    return {
-      textarea: "",
-      dialogVisible: false,
-      config: {
-        initialFrameWidth: null,
-        initialFrameHeight: 350
+  import UE from "../../common/ueditor";
+  export default {
+    data() {
+      return {
+        textarea: "",
+        dialogVisible: false,
+        config: {
+          initialFrameWidth: null,
+          initialFrameHeight: 350
+        },
+        product: {},
+        currentPage: 1,
+        tableData3: []
+      };
+    },
+    components: {
+      UE
+    },
+    methods: {
+      //新增
+      addItem() {
+        this.dialogVisible = true;
+        this.news = {};
+        this.$refs.ue.setUEContent("");
+        document.querySelector("#addImg").src = this.tools.img;
       },
-      product: {},
-      currentPage: 1,
-      tableData3: []
-    };
-  },
-  components: {
-    UE
-  },
-  methods: {
-    //新增
-    addItem() {
-      this.dialogVisible = true;
-      this.news = {};
-      this.$refs.ue.setUEContent("");
-      document.querySelector("#addImg").src = this.tools.img;
-    },
-    //上传图片
-    imgChange(e) {
-      console.log("上传");
-      this.tools.uploads(e).then(res => {
-        console.log(res);
-        if (res) {
-          this.product.cover = res;
-          document.querySelector("#addImg").src = res;
-        } else {
-          this.$message("上传图片失败");
+      //上传图片
+      imgChange(e) {
+        console.log("上传");
+        this.tools.uploads(e).then(res => {
+          console.log(res);
+          if (res) {
+            this.product.cover = res;
+            document.querySelector("#addImg").src = res;
+          } else {
+            this.$message("上传图片失败");
+          }
+        });
+      },
+      //编辑
+      handleClick(item) {
+        this.dialogVisible = true;
+        this.product = item;
+        this.product.status += ''
+        if (item.cover) {
+          document.querySelector("#addImg").src = item.cover;
         }
-      });
-    },
-    //编辑
-    handleClick(item) {
-      this.dialogVisible = true;
-      this.product = item;
-      this.product.status +=''
-      if (item.cover) {
-        document.querySelector("#addImg").src = item.cover;
+        this.$refs.ue.setUEContent(item.content);
+      },
+      handleSizeChange(val) {
+        console.log(`每页 ${val} 条`);
+      },
+      handleCurrentChange(val) {
+        console.log(`当前页: ${val}`);
+      },
+      handleClose(done) {
+        done();
+      },
+      //保存
+      save() {
+        this.product.content = this.$refs.ue.getUEContent();
+        this.product.content = this.product.content.replace("\\", "");
+        this.$post("admin/other/series/editProduct", this.product).then(res => {
+          if (res.code == 0) {
+            this.gitList();
+            this.dialogVisible = false;
+          }
+          this.$message(res.msg);
+        });
+      },
+      // 添加
+      add() {},
+      handleSelectionChange(val) {
+        console.log(val);
+      },
+      gitList() {
+        this.$post("admin/other/series/productList").then(res => {
+          this.tableData3 = res.data;
+        });
       }
-      this.$refs.ue.setUEContent(item.content);
     },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-    },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
-    },
-    handleClose(done) {
-      done();
-    },
-    //保存
-    save() {
-      this.product.content = this.$refs.ue.getUEContent();
-      this.product.content = this.product.content.replace("\\", "");
-      this.$post("admin/other/series/editProduct", this.product).then(res => {
-        if (res.code == 0) {
-          this.gitList();
-          this.dialogVisible = false;
-        }
-        this.$message(res.msg);
-      });
-    },
-    // 添加
-    add() {},
-    handleSelectionChange(val) {
-      console.log(val);
-    },
-    gitList() {
-      this.$post("admin/other/series/productList").then(res => {
-        this.tableData3 = res.data;
-      });
+    mounted() {
+      this.gitList();
     }
-  },
-  mounted() {
-    this.gitList();
-  }
-};
+  };
+
 </script>
 
 <style scoped>
-.center {
-  width: 700px;
-}
+  .center {
+    width: 700px;
+  }
 
-.describe {
-  margin-left: 60px;
-}
+  .describe {
+    margin-left: 60px;
+  }
 
-.describe_p {
-  margin: 5px 0;
-}
+  .describe_p {
+    margin: 5px 0;
+  }
+
 </style>

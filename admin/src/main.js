@@ -15,6 +15,8 @@ import '../static/utf8-php/lang/zh-cn/zh-cn.js'
 import '../static/utf8-php/ueditor.parse.min.js'
 import '../static/utf8-php/ueditor.all.js'
 import store from './store/index.js'
+import primary from './components/common/primary.vue'
+Vue.component('primary',primary)
 import {
   tools
 } from './assets/js/tools.js'

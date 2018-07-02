@@ -75,9 +75,11 @@
         <div class="cpm_btn">
           <el-button @click="dialogVisible = false">取 消</el-button>
           <el-button type="primary" @click="save">确 定</el-button>
+          <el-button type="primary" @click="$refs.primary.look($refs.ue.getUEContent())">预 览</el-button>
         </div>
       </div>
     </transition>
+        <primary ref="primary"></primary> 
   </div>
 </template>
 

@@ -148,3 +148,7 @@ li {
   height: 100%;
   opacity: 0;
 }
+body.view{
+ overflow: scroll !important;
+ overflow-x: hidden !important;
+}

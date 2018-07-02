@@ -15,9 +15,10 @@
       <el-input v-model="input" placeholder="请输入内容" size="small" style="width:240px"></el-input>
     </div>
     <div class="cpm_btn">
-      <el-button type="primary">预览</el-button>
       <el-button type="primary" @click="save">确定</el-button>
+      <el-button type="primary" @click="$refs.primary.look($refs.ue.getUEContent())">预 览</el-button>
     </div>
+        <primary ref="primary"></primary> 
   </div>
 </template>
 
