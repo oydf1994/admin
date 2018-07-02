@@ -42,6 +42,7 @@ li {
 
 .cpm {
   position: absolute;
+  width: 1000px !important;
   left: 0;
   right: 0;
   margin: 0 auto;
@@ -65,6 +66,9 @@ li {
   border-top-right-radius: 15px;
   color: #5e78bc;
 }
+.editor-container{
+  height: 500px;
+}
 
 .cpm_body {
   padding: 20px;
@@ -75,9 +79,9 @@ li {
 }
 
 .cpm_line {
-  height: 50px;
-  line-height: 50px;
-  margin: 10px 0;
+  height: 40px;
+  line-height: 40px;
+  margin: 5px 0;
 }
 
 .cpm_line .span {
@@ -93,7 +97,7 @@ li {
 }
 
 .cpm_img {
-  height: 80px;
+  height: 70px;
 }
 
 .cpm_img span {

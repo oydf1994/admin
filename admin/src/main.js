@@ -13,6 +13,7 @@ import '../static/utf8-php/ueditor.config.js'
 import '../static/utf8-php/ueditor.all.min.js'
 import '../static/utf8-php/lang/zh-cn/zh-cn.js'
 import '../static/utf8-php/ueditor.parse.min.js'
+import '../static/utf8-php/ueditor.all.js'
 import store from './store/index.js'
 import {
   tools

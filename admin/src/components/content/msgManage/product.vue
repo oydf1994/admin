@@ -60,9 +60,9 @@
             <span class="span">排序:</span>
             <el-input v-model="product.sort" placeholder="请输入内容" size="small"></el-input>
           </div>
-          <div class="cpm_line">
+          <div class="cpm_line" style="margin-bottom: 30px;height: 50px;">
           <span class="span">视频简介:</span>
-          <el-input type="textarea" rows="2" style="width:300px" placeholder="请输入内容" v-model="product.describe"></el-input>
+          <el-input type="textarea" rows="3" style="width:400px" placeholder="请输入内容" v-model="product.describe"></el-input>
           </div>
           <div>
             <div class="editor-container">

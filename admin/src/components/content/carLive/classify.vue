@@ -137,82 +137,85 @@
 </template>
 
 <script>
-  import UE from "../../common/ueditor";
-  export default {
-    data() {
-      return {
-        textarea: "",
-        submit: false,
-        comment: false,
-        config: {
-          initialFrameWidth: null,
-          initialFrameHeight: 350
-        },
-        input: "",
-        dialogVisible: false,
-        value: "",
-        options: [],
-        currentPage: 1,
-        tableData3: [],
-        selList: [],
-        carLives: {
-          imgUrl: ""
-        },
-        options: [],
-        reviewList: [],
-        page: {}
-      };
-    },
-    components: {
-      UE
-    },
-    methods: {
-      //新增
-      addItem() {
-        this.dialogVisible = true;
-        this.carLives = {
-          imgUrl: ""
-        };
-        this.$refs.ue.setUEContent("");
-        document.querySelector("#addImg").src = this.tools.img;
+import UE from "../../common/ueditor";
+export default {
+  data() {
+    return {
+      textarea: "",
+      submit: false,
+      comment: false,
+      config: {
+        initialFrameWidth: null,
+        initialFrameHeight: 350
       },
-      //删除评论
-      delReview(item) {
-        this.$confirm('是否确认删除该选项?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
+      input: "",
+      dialogVisible: false,
+      value: "",
+      options: [],
+      currentPage: 1,
+      tableData3: [],
+      selList: [],
+      carLives: {
+        imgUrl: ""
+      },
+      options: [],
+      reviewList: [],
+      page: {}
+    };
+  },
+  components: {
+    UE
+  },
+  methods: {
+    //新增
+    addItem() {
+      this.dialogVisible = true;
+      this.carLives = {
+        imgUrl: ""
+      };
+      this.$refs.ue.setUEContent("");
+      document.querySelector("#addImg").src = this.tools.img;
+    },
+    //删除评论
+    delReview(item) {
+      this.$confirm("是否确认删除该选项?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
           this.$post("admin/article/carlife/delCarLifeComment", {
             comment_id: item.comment_id
           }).then(res => {
             this.$message(res.msg);
             this.review(item.life_id);
           });
-        }).catch(() => {
+        })
+        .catch(() => {
           this.$message({
-            type: 'info',
-            message: '已取消删除'
+            type: "info",
+            message: "已取消删除"
           });
         });
-      },
-      //评论列表
-      review(id) {
-        this.comment = true;
-        this.$post("admin/article/carlife/getCarLifeComment", {
-          life_id: id
-        }).then(res => {
-          this.reviewList = res.data;
-          console.log(res);
-        });
-      },
-      //批量删除
-      batchDel() {
-        this.$confirm('是否确认删除该选项?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
+    },
+    //评论列表
+    review(id) {
+      this.comment = true;
+      this.$post("admin/article/carlife/getCarLifeComment", {
+        life_id: id
+      }).then(res => {
+        this.reviewList = res.data;
+        console.log(res);
+      });
+    },
+    //批量删除
+    batchDel() {
+      this.$confirm("是否确认删除该选项?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
           this.$post("admin/article/carlife/delCarLife", {
             ids: this.selList
               .map(i => {
@@ -226,46 +229,48 @@
             this.$message(res.msg);
             console.log(res);
           });
-        }).catch(() => {
+        })
+        .catch(() => {
           this.$message({
-            type: 'info',
-            message: '已取消删除'
+            type: "info",
+            message: "已取消删除"
           });
         });
-      },
-      //点击查询
-      btn() {
-        this.$post("admin/article/carlife/getCarLifeList", {
-          keyword: this.input
-        }).then(res => {
-          console.log(res);
-          this.tableData3 = res.data;
-          this.$message(res.msg);
-          this.carLives = {
-            imgUrl: ""
-          };
-        });
-      },
-      //选择分类
-      classifyChange() {
-        this.$post("admin/article/carlife/getCarLifeList", {
-          c_id: this.value
-        }).then(res => {
-          console.log(res);
-          this.tableData3 = res.data;
-          this.$message(res.msg);
-          this.carLives = {
-            imgUrl: ""
-          };
-        });
-      },
-      //删除
-      del(item) {
-        this.$confirm('是否确认删除该选项?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
+    },
+    //点击查询
+    btn() {
+      this.$post("admin/article/carlife/getCarLifeList", {
+        keyword: this.input
+      }).then(res => {
+        console.log(res);
+        this.tableData3 = res.data;
+        this.$message(res.msg);
+        this.carLives = {
+          imgUrl: ""
+        };
+      });
+    },
+    //选择分类
+    classifyChange() {
+      this.$post("admin/article/carlife/getCarLifeList", {
+        c_id: this.value
+      }).then(res => {
+        console.log(res);
+        this.tableData3 = res.data;
+        this.$message(res.msg);
+        this.carLives = {
+          imgUrl: ""
+        };
+      });
+    },
+    //删除
+    del(item) {
+      this.$confirm("是否确认删除该选项?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
           this.$post("admin/article/carlife/delCarLife", {
             ids: item.id
           }).then(res => {
@@ -275,136 +280,134 @@
             this.$message(res.msg);
             console.log(res);
           });
-        }).catch(() => {
+        })
+        .catch(() => {
           this.$message({
-            type: 'info',
-            message: '已取消删除'
+            type: "info",
+            message: "已取消删除"
           });
         });
-      },
-      //编辑
-      edit(item) {
-        this.dialogVisible = true;
-        console.log(item);
-        if (item.image) {
-          document.querySelector("#addImg").src = item.image;
+    },
+    //编辑
+    edit(item) {
+      this.dialogVisible = true;
+      console.log(item);
+      if (item.image) {
+        document.querySelector("#addImg").src = item.image;
+      }
+      this.$refs.ue.setUEContent(item.content);
+      this.carLives = item;
+    },
+    //上传图片
+    imgChange(e) {
+      console.log("上传");
+      this.tools.uploads(e).then(res => {
+        console.log(res);
+        if (res) {
+          this.carLives.imgUrl = res;
+          document.querySelector("#addImg").src = res;
+        } else {
+          this.$message("上传图片失败");
         }
-        this.$refs.ue.setUEContent(item.content);
-        this.carLives = item;
-      },
-      //上传图片
-      imgChange(e) {
-        console.log("上传");
-        this.tools.uploads(e).then(res => {
-          console.log(res);
-          if (res) {
-            this.carLives.imgUrl = res;
-            document.querySelector("#addImg").src = res;
-          } else {
-            this.$message("上传图片失败");
-          }
+      });
+    },
+    //获取车生活分类列表
+    carLive() {
+      this.$post("admin/article/carlife/getCarLifeCategoryList").then(res => {
+        res.data.forEach(i => {
+          let json = {
+            value: i.c_id,
+            label: i.c_name
+          };
+          this.options.push(json);
         });
-      },
-      //获取车生活分类列表
-      carLive() {
-        this.$post("admin/article/carlife/getCarLifeCategoryList").then(res => {
-          res.data.forEach(i => {
-            let json = {
-              value: i.c_id,
-              label: i.c_name
-            };
-            this.options.push(json);
-          });
-        });
-      },
-      //置顶
-      top(num, id) {
-        this.$post("admin/article/carlife/carLifeTop", {
-          id: id,
-          top: num
-        }).then(res => {
+      });
+    },
+    //置顶
+    top(num, id) {
+      this.$post("admin/article/carlife/carLifeTop", {
+        id: id,
+        top: num
+      }).then(res => {
+        if (res.code == 0) {
+          this.$message(res.msg);
+          this.gitList();
+        }
+      });
+    },
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+    },
+    handleClose(done) {
+      done();
+    },
+    //上下线
+    status() {},
+    //保存
+    save() {
+      this.carLives.content = this.$refs.ue.getUEContent();
+      this.carLives.content = this.carLives.content.replace("\\", "");
+      console.log(this.carLives);
+      this.$post("admin/article/carlife/handleCarLife", this.carLives).then(
+        res => {
           if (res.code == 0) {
-            this.$message(res.msg);
+            this.dialogVisible = false;
             this.gitList();
           }
-        });
-      },
-      handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-      },
-      handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
-      },
-      handleClose(done) {
-        done();
-      },
-      //上下线
-      status() {},
-      //保存
-      save() {
-        this.carLives.content = this.$refs.ue.getUEContent();
-        this.carLives.content = this.carLives.content.replace("\\", "");
-        console.log(this.carLives);
-        this.$post("admin/article/carlife/handleCarLife", this.carLives).then(
-          res => {
-            if (res.code == 0) {
-              this.dialogVisible = false;
-              this.gitList();
-            }
-            this.$message(res.msg);
-          }
-        );
-      },
-      // 添加
-      add() {},
-      handleSelectionChange(val) {
-        console.log(val);
-        this.selList = val;
-      },
-      demo(item) {
-        console.log(item);
-      },
-      gitList() {
-        this.$post("admin/article/carlife/getCarLifeList").then(res => {
-          console.log(res);
-          this.tableData3 = res.data;
-          this.page = res.page;
-          this.carLives = {
-            imgUrl: ""
-          };
-        });
-      }
+          this.$message(res.msg);
+        }
+      );
     },
-    mounted() {
-      this.gitList();
-      this.carLive();
+    // 添加
+    add() {},
+    handleSelectionChange(val) {
+      console.log(val);
+      this.selList = val;
     },
-    destory() {}
-  };
-
+    demo(item) {
+      console.log(item);
+    },
+    gitList() {
+      this.$post("admin/article/carlife/getCarLifeList").then(res => {
+        this.tableData3 = res.data;
+        this.page = res.page;
+        this.carLives = {
+          imgUrl: ""
+        };
+      });
+    }
+  },
+  mounted() {
+    this.gitList();
+    this.carLive();
+  },
+  destory() {}
+};
 </script>
 
 <style scoped>
-  .center {
-    width: 700px;
-  }
+.center {
+  width: 700px;
+}
 
-  .commentList img {
-    width: 50px;
-    float: left;
-  }
+.commentList img {
+  width: 50px;
+  float: left;
+}
 
-  .commentList li {
-    margin-bottom: 20px;
-    margin-top: 10px;
-  }
+.commentList li {
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
 
-  .describe {
-    margin-left: 60px;
-  }
+.describe {
+  margin-left: 60px;
+}
 
-  .describe_p {
-    margin: 5px 0;
-  }
-
+.describe_p {
+  margin: 5px 0;
+}
 </style>

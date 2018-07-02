@@ -10,7 +10,7 @@
         <input type="file" @change="imgChange">
       </div>
     </div>
-    <div class="cpm_line" style="margin-top: 20px;">
+    <div class="cpm_line" style="margin-top: 40px;">
       <span class="span">视频地址</span>
       <el-input v-model="input" placeholder="请输入内容" size="small" style="width:240px"></el-input>
     </div>

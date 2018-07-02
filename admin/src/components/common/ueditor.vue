@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="editor" style="width:650px;height:160px;"></div>
+    <div id="editor"></div>
   </div>
 </template>
 <script>
@@ -43,5 +43,6 @@ export default {
 <style scoped>
 #editor {
   z-index: 9999;
+  height: 400px;
 }
 </style>

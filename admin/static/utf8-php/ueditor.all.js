@@ -5,7 +5,6 @@
  */
 
 (function(){
-
 // editor.js
 UEDITOR_CONFIG = window.UEDITOR_CONFIG || {};
 
@@ -8084,10 +8083,10 @@ UE.Editor.defaultOptions = function(editor){
 
                 /* 发出ajax请求 */
                 me._serverConfigLoaded = false;
-
+                console.log(configUrl)
                 configUrl && UE.ajax.request(configUrl,{
                     'method': 'GET',
-                    'dataType': isJsonp ? 'jsonp':'',
+                    'dataType': isJsonp ? '':'',
                     'onsuccess':function(r){
                         try {
                             var config = isJsonp ? r:eval("("+r.responseText+")");
@@ -23742,7 +23741,6 @@ UE.plugin.register('autoupload', function (){
             loadingHtml, errorHandler, successHandler,
             filetype = /image\/\w+/i.test(file.type) ? 'image':'file',
             loadingId = 'loading_' + (+new Date()).toString(36);
-
         fieldName = me.getOpt(filetype + 'FieldName');
         urlPrefix = me.getOpt(filetype + 'UrlPrefix');
         maxSize = me.getOpt(filetype + 'MaxSize');
@@ -24469,21 +24467,18 @@ UE.plugin.register('simpleupload', function (){
             h = containerBtn.offsetHeight || 20,
             btnIframe = document.createElement('iframe'),
             btnStyle = 'display:block;width:' + w + 'px;height:' + h + 'px;overflow:hidden;border:0;margin:0;padding:0;position:absolute;top:0;left:0;filter:alpha(opacity=0);-moz-opacity:0;-khtml-opacity: 0;opacity: 0;cursor:pointer;';
-
         domUtils.on(btnIframe, 'load', function(){
-
             var timestrap = (+new Date()).toString(36),
                 wrapper,
                 btnIframeDoc,
                 btnIframeBody;
-
             btnIframeDoc = (btnIframe.contentDocument || btnIframe.contentWindow.document);
             btnIframeBody = btnIframeDoc.body;
             wrapper = btnIframeDoc.createElement('div');
-
+            console.log(1,me.getOpt('serverUrl'))
             wrapper.innerHTML = '<form id="edui_form_' + timestrap + '" target="edui_iframe_' + timestrap + '" method="POST" enctype="multipart/form-data" action="' + me.getOpt('serverUrl') + '" ' +
             'style="' + btnStyle + '">' +
-            '<input id="edui_input_' + timestrap + '" type="file" accept="image/*" name="' + me.options.imageFieldName + '" ' +
+            '<input id="edui_input_' + timestrap + '" type="file" accept="image/*" name="file" ' +
             'style="' + btnStyle + '">' +
             '</form>' +
             '<iframe id="edui_iframe_' + timestrap + '" name="edui_iframe_' + timestrap + '" style="display:none;width:0;height:0;border:0;margin:0;padding:0;position:absolute;"></iframe>';
@@ -24508,13 +24503,10 @@ UE.plugin.register('simpleupload', function (){
                 if(!input.value) return;
                 var loadingId = 'loading_' + (+new Date()).toString(36);
                 var params = utils.serializeParam(me.queryCommandValue('serverparam')) || '';
-
                 var imageActionUrl = me.getActionUrl(me.getOpt('imageActionName'));
                 var allowFiles = me.getOpt('imageAllowFiles');
-
                 me.focus();
                 me.execCommand('inserthtml', '<img class="loadingclass" id="' + loadingId + '" src="' + me.options.themePath + me.options.theme +'/images/spacer.gif" title="' + (me.getLang('simpleupload.loading') || '') + '" >');
-
                 function callback(){
                     try{
                         var link, json, loader,
@@ -24553,10 +24545,10 @@ UE.plugin.register('simpleupload', function (){
                 }
 
                 /* 判断后端配置是否没有加载成功 */
-                if (!me.getOpt('imageActionName')) {
-                    errorHandler(me.getLang('autoupload.errorLoadConfig'));
-                    return;
-                }
+                // if (!me.getOpt('imageActionName')) {
+                //     errorHandler(me.getLang('autoupload.errorLoadConfig'));
+                //     return;
+                // }
                 // 判断文件格式是否错误
                 var filename = input.value,
                     fileext = filename ? filename.substr(filename.lastIndexOf('.')):'';
@@ -24564,9 +24556,8 @@ UE.plugin.register('simpleupload', function (){
                     showErrorLoader(me.getLang('simpleupload.exceedTypeError'));
                     return;
                 }
-
                 domUtils.on(iframe, 'load', callback);
-                form.action = utils.formatUrl(imageActionUrl + (imageActionUrl.indexOf('?') == -1 ? '?':'&') + params);
+                form.action = 'http://localhost:3000/getImg';
                 form.submit();
             });
 
@@ -24584,7 +24575,6 @@ UE.plugin.register('simpleupload', function (){
             });
             isLoaded = true;
         });
-
         btnIframe.style.cssText = btnStyle;
         containerBtn.appendChild(btnIframe);
     }
